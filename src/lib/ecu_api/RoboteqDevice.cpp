@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include "ErrorCodes.h"
 #include "RoboteqDevice.h"
-
+#include <base/printf.h>
 
 using namespace std;
 
@@ -98,12 +98,15 @@ int RoboteqDevice::SetCommand(int commandItem, int index, int value)
         return RQ_INDEX_OUT_RANGE;
     string toString = to_string(value);
     int status = com.IssueCommand("!", commandItem, index, toString , response, true);
-    if (status != RQ_SUCCESS)
-        return status;
-    if (response != "+")
-        return RQ_SET_COMMAND_FAILED;
+    //PDBG("status %s", status == RQ_SUCCESS ? "success" : "failed");
+    //if (status != RQ_SUCCESS) {
+    //    return status;
+    //if (response != "+")
+    //    PERR("Set Command failed %d", status);
+    //    return RQ_SET_COMMAND_FAILED;
+    //}
 
-    return RQ_SUCCESS;
+    return status;
 }
 /**
  * Calls SetCommand(int, int, int) Method with index set to 1

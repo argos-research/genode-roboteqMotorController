@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 
 #include <base/printf.h>
 #include <ecu_api/CoreAPI.h>
@@ -8,6 +9,18 @@
 #include <timer_session/connection.h>
 
 using namespace std;
+
+string _codes(int status){
+	stringstream _err;
+	switch(status) {
+		case RQ_SUCCESS: _err << "success"; break;
+		case RQ_INVALID_RESPONSE: _err << "invalid response"; break;
+		case RQ_SET_COMMAND_FAILED: _err << "set command failed"; break;
+		default: _err << "unknown"; break;
+
+	};
+	return _err.str();
+}
 
 int main(int argc, char *argv[])
 {
@@ -19,10 +32,13 @@ int main(int argc, char *argv[])
 	CoreAPI* core = new CoreAPI(CONNECTION_COM);
 
 	// Example Setter
-	PDBG("Setting motor speed to %d.\n", var);
-	if ((status = core->SetMotorSpeedAbs(var)) != RQ_SUCCESS)
-	{
-		PDBG("Error SetCommand Failed: %d\n", status);
+	while(true){
+	//PDBG("Setting motor speed to %d.\n", var);
+	//for(int i = 0; i < 50; i++) {
+		if ((status = core->SetMotorSpeedAbs(var)) != RQ_SUCCESS)
+		{
+			PDBG("Error SetCommand Failed: %d code %s\n", status, _codes(status).c_str());
+		}
 	}
 	// Example Getter
 	PDBG("Getting MCU Temperature.\n");
